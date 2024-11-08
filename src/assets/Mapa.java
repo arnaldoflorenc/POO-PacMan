@@ -4,15 +4,8 @@ public class Mapa {
 	private static int yTiles = 22;
 	private static int xTiles = 21;
 	
-	//HashSet<MapElement> walls;
-	//HashSet<MapElement> points;
-	//HashSet<MapElement> ghosts;
-	//MapElement pacman;
-	
-	//Timer gameLoop;
-	
 	protected static String[] tileMap = {
-	        "XXXXXXXXXXXXXXXXXXXXX",
+	        "XXXXXXXXXX XXXXXXXXXX",
 	        "X                   X",
 	        "X XX XXXX X XXXX XX X",
 	        "X XX XXXX X XXXX XX X",
@@ -33,11 +26,8 @@ public class Mapa {
 	        "X    X    X    X    X",
 	        "X XXXXXXX X XXXXXXX X",
 	        "X                   X",
-	        "XXXXXXXXXXXXXXXXXXXXX" 
+	        "XXXXXXXXXX XXXXXXXXXX" 
 	    };
-	
-	
-		
 	
 	public static int getYTiles() {
 		return yTiles;
@@ -46,6 +36,4 @@ public class Mapa {
 	public static int getXTiles() {
 		return xTiles;
 	}
-	
-
 }

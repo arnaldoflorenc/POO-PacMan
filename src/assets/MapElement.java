@@ -3,16 +3,16 @@ package assets;
 import java.awt.Image;
 
 public class MapElement {
-	private int x;
-	private int y;
+	private int x = 0;
+	private int y = 0;
 	
-	private static int tileSize = 32;
+	private final static int tileSize = 32;
 	private  int tamX = tileSize;
 	private  int tamY = tileSize;
 	private Image sprite;
 	
-	private int inicialX;
-	private int inicialY;
+	//private int inicialX;
+	//private int inicialY;
 	
 	public MapElement(String sprite, int x, int y, int tamX, int tamY) {
 		this.sprite = Sprites.getSprite(sprite);
@@ -20,8 +20,8 @@ public class MapElement {
 		this.y = y;
 		this.tamX = tamX;
 		this.tamY = tamY;
-		this.inicialX = x;
-		this.inicialY = y;
+		//this.inicialX = x;
+		//this.inicialY = y;
 	}
 	
 	public int getX() {
@@ -51,9 +51,17 @@ public class MapElement {
 	public Image getSprite() {
 		return sprite;
 	}
+
+	public void eraseSprite() {
+		this.sprite = null;
+	}
 	
 	public void setSprite(String sprite) {
 		this.sprite = Sprites.getSprite(sprite);
+	}
+	
+	public void setPacmanSprite(String sprite) {
+		this.sprite = Sprites.getPacmanSprite(sprite);
 	}
 	
 	public static int getTileSize() {
