@@ -18,23 +18,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 	private static int gameYSize = Mapa.getYTiles() * MapElement.getTileSize();
 	private static int gameXSize = Mapa.getXTiles() * MapElement.getTileSize();
 	
-	HashSet<MapElement> walls;
+	public static HashSet<MapElement> walls;
 	HashSet<MapElement> points; //arrumar dps
-	HashSet<MapElement> ghosts;
-	MapElement pacman;
+	HashSet<Entities> ghosts;
+	Sprites sprites;
+	Entities pacman; //mudar para entity
 	Timer gameLoop;
 	
-	protected Image wallImage;
-	
-	protected Image blueGhostImage;
-	protected Image orangeGhostImage;
-	protected Image pinkGhostImage;
-	protected Image redGhostImage;
-	
-	protected Image pacmanUpImage;
-	protected Image pacmanDownImage;
-	protected Image pacmanLeftImage;
-	protected Image pacmanRightImage;
 	
 	public Game() {
 		setPreferredSize(new Dimension(gameXSize, gameYSize));
@@ -42,20 +32,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 		addKeyListener(this);
 		setFocusable(true);
 		
-		wallImage = new ImageIcon(getClass().getResource("/sprites/wall.png")).getImage();
-		
-		blueGhostImage = new ImageIcon(getClass().getResource("/sprites/blueGhost.png")).getImage();
-		orangeGhostImage = new ImageIcon(getClass().getResource("/sprites/orangeGhost.png")).getImage();
-		pinkGhostImage = new ImageIcon(getClass().getResource("/sprites/pinkGhost.png")).getImage();
-		redGhostImage = new ImageIcon(getClass().getResource("/sprites/redGhost.png")).getImage();
-		
-		pacmanUpImage = new ImageIcon(getClass().getResource("/sprites/pacmanUp.png")).getImage();
-		pacmanDownImage = new ImageIcon(getClass().getResource("/sprites/pacmanDown.png")).getImage();
-		pacmanLeftImage = new ImageIcon(getClass().getResource("/sprites/pacmanLeft.png")).getImage();
-		pacmanRightImage = new ImageIcon(getClass().getResource("/sprites/pacmanRight.png")).getImage();
+		this.sprites = new Sprites();
 		
 		loadMap();
 		
+		gameLoop = new Timer(50, this);
+		gameLoop.start();
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -82,7 +64,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 		
 		walls = new HashSet<MapElement>();
 		points = new HashSet<MapElement>();
-		ghosts = new HashSet<MapElement>();
+		ghosts = new HashSet<Entities>();
 		
 				
 		for (int l = 0; l < Mapa.getYTiles(); l++) {
@@ -95,32 +77,32 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 				
 				switch(tileMapChar) {
 				case 'X': {
-					MapElement wall = new MapElement(wallImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
+					MapElement wall = new MapElement("wall", x, y, MapElement.getTileSize(), MapElement.getTileSize());
 					walls.add(wall);
 					break;
 				}
 				case 'B': {
-					MapElement ghost = new MapElement(blueGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
+					Entities ghost = new Entities("blueGhost", x, y, MapElement.getTileSize(), MapElement.getTileSize());
 					ghosts.add(ghost);
 					break;
 				}
 				case 'p': {
-					MapElement ghost = new MapElement(pinkGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
+					Entities ghost = new Entities("pinkGhost", x, y, MapElement.getTileSize(), MapElement.getTileSize());
 					ghosts.add(ghost);
 					break;
 				}
 				case 'O': {
-					MapElement ghost = new MapElement(orangeGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
+					Entities ghost = new Entities("orangeGhost", x, y, MapElement.getTileSize(), MapElement.getTileSize());
 					ghosts.add(ghost);
 					break;
 				}
 				case 'R': {
-					MapElement ghost = new MapElement(redGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
+					Entities ghost = new Entities("redGhost", x, y, MapElement.getTileSize(), MapElement.getTileSize());
 					ghosts.add(ghost);
 					break;
 				}
 				case 'P': {
-					this.pacman = new MapElement(pacmanRightImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
+					this.pacman = new Entities("pacmanRight", x, y, MapElement.getTileSize(), MapElement.getTileSize());
 					break;
 				}
 				case ' ': {
@@ -151,9 +133,37 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 	public void keyPressed(KeyEvent e) {}
 
 	@Override
-	public void keyReleased(KeyEvent e) {}
+	public void keyReleased(KeyEvent e) {
+		if (e.getKeyCode() ==  KeyEvent.VK_UP) {
+			pacman.updateDir('U');
+			if (pacman.getDir() == 'U') {
+			pacman.setSprite("pacmanUp");
+			}
+		}
+		else if (e.getKeyCode() ==  KeyEvent.VK_DOWN) {
+			pacman.updateDir('D');
+			if (pacman.getDir() == 'D') {
+			pacman.setSprite("pacmanDown");
+			}
+		}
+		else if (e.getKeyCode() ==  KeyEvent.VK_LEFT) {
+			pacman.updateDir('L');
+			if (pacman.getDir() == 'L') {
+			pacman.setSprite("pacmanLeft");
+			}
+		}
+		else if (e.getKeyCode() ==  KeyEvent.VK_RIGHT) {
+			pacman.updateDir('R');
+			if (pacman.getDir() == 'R') {
+			pacman.setSprite("pacmanRight");
+			}
+		}
+	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {}
+	public void actionPerformed(ActionEvent e) {
+		pacman.move();
+		repaint();
+	}
 	
 }

@@ -8,20 +8,8 @@ import javax.swing.ImageIcon;
 
 public class Sprites {
 	
-	protected Map<String, Image> sprites;
-	
-	protected Image wallImage;
-	
-	protected Image blueGhostImage;
-	protected Image orangeGhostImage;
-	protected Image pinkGhostImage;
-	protected Image redGhostImage;
-	
-	protected Image pacmanUpImage;
-	protected Image pacmanDownImage;
-	protected Image pacmanLeftImage;
-	protected Image pacmanRightImage;
-	
+	protected static Map<String, Image> sprites;
+		
 	public Sprites() {
 		
 		sprites = new HashMap<>();
@@ -39,7 +27,7 @@ public class Sprites {
 
 	}
 	
-	public Image getSprite(String spriteName){
+	public static Image getSprite(String spriteName){
 		return sprites.get(spriteName);
 	}
 }
