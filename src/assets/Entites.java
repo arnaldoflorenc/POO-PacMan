@@ -1,5 +1,7 @@
 package assets;
 
+import javafx.scene.image.Image;
+
 public class Entites extends MapElement{
 	
 	protected enum Action {
@@ -20,34 +22,26 @@ public class Entites extends MapElement{
 	protected Action Acao_esperada = Action.DEFAULT;
 	protected Action Acao_passada = Action.DEFAULT;
 	protected Action Acao_atual = Action.DEFAULT;
+	private Game game;
 	
 	public int velocidadeX = 0;
 	public int velocidadeY = 0;
 	
-	public Entites (String sprite, int x, int y, int tamanhoX, int tamanhoY){
+	public Entites (Game game, Image sprite, int x, int y, int tamanhoX, int tamanhoY){
 		super(sprite, x, y, tamanhoX, tamanhoY);
+		this.game = game;
 	}
 	
 	public boolean canMove() {
 		
-		Entites projection = new Entites(null, this.getX(), this.getY(), this.getTamX(), this.getTamY());
-		boolean colisao = false;
-		projection.Acao_esperada = this.Acao_esperada;
-		projection.velocidadeX = this.velocidadeX;
-		projection.velocidadeY = this.velocidadeY;
-		projection.updateVel(Acao_esperada);
-		projection.setX(projection.getX() + projection.velocidadeX);
-		projection.setX(projection.getY() + projection.velocidadeY);
-		updateVel(this.Acao_atual);
+		int projectedX = getX() + velocidadeX;
+	    int projectedY = getY() + velocidadeY;
 		
-		for (MapElement wall : Game.walls) {
-			if (isColliding(projection, wall)) {
-				colisao = true;
-				break;
-			}
+		for (MapElement wall : game.walls) {
+			if (isCollidingWithWalls(projectedX, projectedY)) return false;
 		}
 		
-		return !colisao;
+		return true;
 	}
 
 	public void updateDir() {
@@ -60,30 +54,26 @@ public class Entites extends MapElement{
 		this.Acao_passada = Acao_atual;
 	}
 
-	private void updateVel(Action acao_esp2) {
+	protected void updateVel(Action acao_esp2) {
+		this.velocidadeX = acao_esp2.dx ;
+		this.velocidadeY = acao_esp2.dy ;
+		
 		switch (acao_esp2) {
 			case UP:
-				this.velocidadeX = 0;
-				this.velocidadeY = -getTileSize()/8;
 				this.setPacmanSprite("Up");
 				break;
 			case DOWN:
-				this.velocidadeX = 0;
-				this.velocidadeY = getTileSize()/8;
 				this.setPacmanSprite("Down");
 				break;
 			case LEFT:
-				this.velocidadeY = 0;
-				this.velocidadeX = -getTileSize()/8;
 				this.setPacmanSprite("Left");
 				break;
 			case RIGHT:
-				this.velocidadeY = 0;
-				this.velocidadeX = getTileSize()/8;
 				this.setPacmanSprite("Right");
 				break;
+			default:
+				break;
 		}
-		
 	}
 	
 	public boolean directionChange() {
@@ -91,17 +81,32 @@ public class Entites extends MapElement{
 	}
 	
 	public void move() {
+		
+		updateDir();
+		
 	    int newX = getX() + velocidadeX;
 	    int newY = getY() + velocidadeY;
-
-	    if (!isCollidingWithWalls(newX, newY)) {
+	    
+	    if(newX >= Game.getGameXsize()) {
+	    	newX = 0;
+	    } else if(newX < 0){
+	    	newX = Game.getGameXsize() - getTamX();
+	    }
+	    
+	    if(newY >= Game.getGameYsize()) {
+	    	newY = 0;
+	    } else if(newY < 0) {
+	    	newY = Game.getGameYsize() - getTamY();
+	    }
+	    
+	    if (canMove()) {
 	        setX(newX);
 	        setY(newY);
 	    }
 	}
 	
 	private boolean isCollidingWithWalls(int newX, int newY) {
-	    for (MapElement wall : Game.walls) {
+	    for (MapElement wall : game.walls) {
 	        if (isColliding(newX, newY, wall)) {
 	            return true;
 	        }

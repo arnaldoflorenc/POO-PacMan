@@ -1,167 +1,162 @@
 package assets;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.HashSet;
+import javafx.animation.AnimationTimer;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.scene.image.ImageView;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.Timer;
 
-public class Game extends JPanel implements ActionListener, KeyListener {
-	private static int gameYSize = Mapa.getYTiles() * MapElement.getTileSize();
-	private static int gameXSize = Mapa.getXTiles() * MapElement.getTileSize();
+public class Game extends Pane {
 	
-	HashSet<MapElement> walls;
+	private static final int TILE_SIZE = MapElement.getTileSize();
+	private static int gameXSize = Mapa.getXTiles() * TILE_SIZE;
+	private static int gameYSize = Mapa.getYTiles() * TILE_SIZE;
+	
+	public HashSet<MapElement> walls;
 	HashSet<MapElement> points; //arrumar dps
-	HashSet<MapElement> ghosts;
-	MapElement pacman;
-	Timer gameLoop;
+	HashSet<Ghosts> ghosts;
+	Pacman pacman;
 	
 	protected Image wallImage;
 	
-	protected Image blueGhostImage;
-	protected Image orangeGhostImage;
-	protected Image pinkGhostImage;
-	protected Image redGhostImage;
 	
-	protected Image pacmanUpImage;
-	protected Image pacmanDownImage;
-	protected Image pacmanLeftImage;
-	protected Image pacmanRightImage;
+	private Canvas canvas;
+	private GraphicsContext gc;
 	
 	public Game() {
-		setPreferredSize(new Dimension(gameXSize, gameYSize));
-		setBackground(Color.BLACK);
-		addKeyListener(this);
-		setFocusable(true);
+		setPrefSize(gameXSize, gameYSize);
 		
-		wallImage = new ImageIcon(getClass().getResource("/sprites/wall.png")).getImage();
+		canvas = new Canvas(gameXSize,gameYSize);
+		gc = canvas.getGraphicsContext2D();
+		getChildren().add(canvas);
 		
-		blueGhostImage = new ImageIcon(getClass().getResource("/sprites/blueGhost.png")).getImage();
-		orangeGhostImage = new ImageIcon(getClass().getResource("/sprites/orangeGhost.png")).getImage();
-		pinkGhostImage = new ImageIcon(getClass().getResource("/sprites/pinkGhost.png")).getImage();
-		redGhostImage = new ImageIcon(getClass().getResource("/sprites/redGhost.png")).getImage();
-		
-		pacmanUpImage = new ImageIcon(getClass().getResource("/sprites/pacmanUp.png")).getImage();
-		pacmanDownImage = new ImageIcon(getClass().getResource("/sprites/pacmanDown.png")).getImage();
-		pacmanLeftImage = new ImageIcon(getClass().getResource("/sprites/pacmanLeft.png")).getImage();
-		pacmanRightImage = new ImageIcon(getClass().getResource("/sprites/pacmanRight.png")).getImage();
 		
 		loadMap();
 		
+		setOnKeyPressed(this::handleKeyPress);
+        setOnKeyReleased(this::handleKeyRelease);
+        
+        AnimationTimer gameLoop = new AnimationTimer() {
+        	@Override
+        	public void handle(long now) {
+        		update();
+        		draw();
+        	}
+        };
+        
+        gameLoop.start();
 	}
 	
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		draw(g);
-	}
+	private void draw() {
+		gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, gameXSize, gameYSize);
+        
+        for (MapElement wall : walls) {
+            wall.draw(gc);
+        }
+        for (MapElement point : points) {
+            point.draw(gc);
+        }
+        for (Ghosts ghost : ghosts) {
+            ghost.draw(gc);
+        }
+        pacman.draw(gc);
+    }
 	
-	public void draw(Graphics g) {
-		g.drawImage(pacman.getSprite(), pacman.getX(), pacman.getY(), pacman.getTamX(), pacman.getTamY(), null);
-		
-		for (MapElement ghost : ghosts) {
-			g.drawImage(ghost.getSprite(), ghost.getX(), ghost.getY(), ghost.getTamX(), ghost.getTamY(), null);
-		}
-		for (MapElement wall: walls) {
-			g.drawImage(wall.getSprite(), wall.getX(), wall.getY(), wall.getTamX(), wall.getTamY(), null);
-		}
-		g.setColor(Color.WHITE);
-		for (MapElement point: points) {
-			g.fillRect(point.getX(), point.getY(), point.getTamX(), point.getTamY());
-		}
-	}
 	
 	public void loadMap() {
 		
 		walls = new HashSet<MapElement>();
 		points = new HashSet<MapElement>();
-		ghosts = new HashSet<MapElement>();
-		
+		ghosts = new HashSet<Ghosts>();
+			
 				
 		for (int l = 0; l < Mapa.getYTiles(); l++) {
 			for (int c = 0; c < Mapa.getXTiles(); c++) {
-				String linha = Mapa.tileMap[l];
+				String linha = Mapa.Maze.get(l);
 				char tileMapChar = linha.charAt(c);
 				
 				int x = c * MapElement.getTileSize();
 				int y = l * MapElement.getTileSize();
 				
-				switch(tileMapChar) {
-				case '0': {
-					MapElement wall = new MapElement(wallImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
-					walls.add(wall);
-					break;
-				}
-				case 'B': {
-					MapElement ghost = new MapElement(blueGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
-					ghosts.add(ghost);
-					break;
-				}
-				case 'p': {
-					MapElement ghost = new MapElement(pinkGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
-					ghosts.add(ghost);
-					break;
-				}
-				case 'O': {
-					MapElement ghost = new MapElement(orangeGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
-					ghosts.add(ghost);
-					break;
-				}
-				case 'R': {
-					MapElement ghost = new MapElement(redGhostImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
-					ghosts.add(ghost);
-					break;
-				}
-				case 'P': {
-					this.pacman = new MapElement(pacmanRightImage, x, y, MapElement.getTileSize(), MapElement.getTileSize());
-					break;
-				}
-				case ' ': {
-					MapElement point = new MapElement(null, x + 14, y + 14, 4, 4);
-					points.add(point);
-					break;
-				}
-				default:
-					break;
-			}
+				switch (tileMapChar) {
+                case '1': 
+                    walls.add(new MapElement(Sprites.wallSprite, x, y, TILE_SIZE, TILE_SIZE));
+                    //System.out.println("wall");
+                    break;
+                case '2':
+                    points.add(new MapElement(null , x + TILE_SIZE / 2, y + TILE_SIZE / 2, 4, 4));
+                    //System.out.println("points");
+                    break;
+                case 'B':
+                    ghosts.add(new Ghosts(this, "Blue", x, y));
+                    //System.out.println("Blue");
+                    break;
+                case 'O':
+                    ghosts.add(new Ghosts(this, "Orange", x, y));
+                    //System.out.println("Orange");
+                    break;
+                case 'P':
+                    ghosts.add(new Ghosts(this, "Pink", x, y));
+                    //System.out.println("Pink");
+                    break;
+                case 'R':
+                    ghosts.add(new Ghosts(this, "Red", x, y));
+                    //System.out.println("red");
+                    break;
+                case 'C':
+                    pacman = new Pacman(this, x, y);
+                    //System.out.println("pacman");
+                    break;
+            }
 			}
 		}
 	}
 	
+	private void update() {
+        pacman.move();
+        for (Ghosts ghost : ghosts) {
+            ghost.move();
+        }
+    }
 	
-	
-	
-	
-	
-	
-	
-	
-
-	@Override
-	public void keyTyped(KeyEvent e) {}
-
-	@Override
-	public void keyPressed(KeyEvent e) {}
-
-	@Override
-	public void keyReleased(KeyEvent e) {}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {}
-
 	public static int getGameXsize() {
-		return 0;
+		return gameXSize;
 	}
 
 	public static int getGameYsize() {
-		return 0;
+		return gameYSize;
 	}
 	
+	public void handleKeyPress(KeyEvent event) {
+		System.out.println("Tecla pressionada: " + event.getCode());
+		
+	    switch (event.getCode()) {
+	        case UP:
+	            pacman.setDir(Entites.Action.UP); // Configura direção para cima
+	            break;
+	        case DOWN:
+	            pacman.setDir(Entites.Action.DOWN); // Configura direção para baixo
+	            break;
+	        case LEFT:
+	            pacman.setDir(Entites.Action.LEFT); // Configura direção para a esquerda
+	            break;
+	        case RIGHT:
+	            pacman.setDir(Entites.Action.RIGHT); // Configura direção para a direita
+	            break;
+	        default:
+	        	break;
+	    }
+	}
+	
+	public void handleKeyRelease(KeyEvent event) {
+		
+	}
 }

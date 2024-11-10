@@ -1,64 +1,44 @@
 package assets;
 
 import javafx.scene.image.Image;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class MapElement {
 	private int x = 0;
 	private int y = 0;
 	
-	private final static int tileSize = 32;
+	private final static int tileSize = 16;
 	private  int tamX = tileSize;
 	private  int tamY = tileSize;
 	private Image sprite;
 	
-	//private int inicialX;
-	//private int inicialY;
-	
-	public MapElement(String sprite, int x, int y, int tamX, int tamY) {
-		this.sprite = Sprites.getSprite(sprite);
+	public MapElement(Image sprite, int x, int y, int tamX, int tamY) {
+		this.sprite = sprite;
 		this.x = x;
 		this.y = y;
 		this.tamX = tamX;
 		this.tamY = tamY;
-		//this.inicialX = x;
-		//this.inicialY = y;
 	}
 	
-	public void setX(int x) {
-		this.x = x;
-	}
+	public void setX(int x) { this.x = x; }
 	
+	public int getX() { return x; }
 	
-	public int getX() {
-		return x;
-	}
+	public void setY(int y) { this.y = y; }
 	
-	public void setY(int y) {
-		this.y = y; 
-	}
+	public int getY() {	return y; }
 	
-	public int getY() {
-		return y;
-	}
-	
-	public int getTamX() {
-		return tamX;
-	}
+	public int getTamX() { return tamX; }
 
-	public int getTamY() {
-		return tamY;
-	}
+	public int getTamY() { return tamY;	}
 	
-	public Image getSprite() {
-		return sprite;
-	}
+	public Image getSprite() { return sprite; }
 	
-	public void setSprite(Image sprite) {
-		this.sprite = sprite;
-	}
+	public void setSprite(Image sprite) { this.sprite = sprite;	}
 	
 	public void setPacmanSprite(String sprite) {
-		
+		this.sprite = Sprites.getPacmanSprite(sprite);
 	}
 	
 	public void setGhostSprite() {
@@ -68,6 +48,12 @@ public class MapElement {
 	public void setPowerSprite() {
 		
 	}
+	
+	public void draw(GraphicsContext gc) {
+        if (sprite != null) { 
+            gc.drawImage(sprite, x, y, tamX, tamY);
+        }
+    }
 	
 	public void eraseSprite() {
 		this.sprite = null;

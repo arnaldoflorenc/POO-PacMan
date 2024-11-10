@@ -3,6 +3,7 @@ package application;
 import java.util.ArrayList;
 import java.util.List;
 
+import assets.Game;
 import assets.Mapa;
 import assets.Pacman;
 import javafx.application.Application;
@@ -23,51 +24,27 @@ public class Main extends Application {
 	private static final int CIRCLE_RAD = 6;
 
 	@Override
-	public void start(Stage stage) {
-		
-		levelData = map.iniMaze();
-		
-		if(levelData.isEmpty()) {
-			throw new IllegalStateException("labirinto não foi inicializado");
-		}
-		
-		GridPane gridpane = new GridPane();
-		
-		for(int i = 0; i < levelData.size(); i++) {
-			String Linha = levelData.get(i);
-			
-			for(int j = 0; j < Linha.length(); j++) {
-				Circle circ = new Circle(CIRCLE_RAD);
-				Rectangle rect = new Rectangle(BLOCK_SIZE, BLOCK_SIZE);
-				
-				
-				if(Linha.charAt(j) == '1'){
-					rect.setFill(Color.BLUE);
-				} else {
-					rect.setFill(Color.BLACK);
-				} 
-					
-				StackPane stackpane = new StackPane();
-				stackpane.getChildren().add(rect);
-				
-				
-				
-				if(Linha.charAt(j) == '2'){
-					circ.setFill(Color.WHITE);
-					stackpane.getChildren().add(circ);
-				}
-				
-				gridpane.add(stackpane, j, i);
-			}
-		}
-		
+    public void start(Stage primaryStage) {
+        // Cria uma instância do jogo
+        Game game = new Game();
 
-			Scene scene = new Scene(gridpane);
-			stage.setTitle("Maze test");
-			stage.setScene(scene);
-			stage.show();
-		
-	}
+        // Configura a cena com o tamanho do jogo
+        Scene scene = new Scene(game, Game.getGameXsize(), Game.getGameYsize());
+
+        
+        // Define a cena como focada em eventos de teclado
+        scene.setOnKeyPressed(event -> game.handleKeyPress(event)); // passando o evento de tecla
+        scene.setOnKeyReleased(event -> game.handleKeyRelease(event));
+
+        // Configura o palco principal (janela)
+        primaryStage.setTitle("Pacman Game");
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false); // Desativa redimensionamento
+        primaryStage.show();
+
+        // Dá foco ao jogo para receber eventos de teclado automaticamente
+        game.requestFocus();
+    }
 
 	public static void main(String[] args) {
 		launch(args);
