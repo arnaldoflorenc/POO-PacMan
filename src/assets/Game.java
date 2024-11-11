@@ -136,8 +136,6 @@ public class Game extends Pane {
 	}
 	
 	public void handleKeyPress(KeyEvent event) {
-		System.out.println("Tecla pressionada: " + event.getCode());
-		
 	    switch (event.getCode()) {
 	        case UP:
 	            pacman.setDir(Entites.Action.UP); // Configura direção para cima
@@ -157,6 +155,15 @@ public class Game extends Pane {
 	}
 	
 	public void handleKeyRelease(KeyEvent event) {
-		
+		switch (event.getCode()) {
+        case UP:
+        case DOWN:
+        case LEFT:
+        case RIGHT:
+            pacman.setDir(Entites.Action.DEFAULT); // Configura direção para a direita
+            break;
+        default:
+        	break;
+    }
 	}
 }

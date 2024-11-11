@@ -8,7 +8,7 @@ public class MapElement {
 	private int x = 0;
 	private int y = 0;
 	
-	private final static int tileSize = 16;
+	private final static int tileSize = 48;
 	private  int tamX = tileSize;
 	private  int tamY = tileSize;
 	private Image sprite;
