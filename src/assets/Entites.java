@@ -105,6 +105,31 @@ public class Entites extends MapElement{
 	    }
 	}
 	
+	public void move(int segueX, int segueY) {
+		
+		updateDir();
+		
+	    int newX = getX() + segueX;
+	    int newY = getY() + segueY;
+	    
+	    if(newX >= Game.getGameXsize()) {
+	    	newX = 0;
+	    } else if(newX < 0){
+	    	newX = Game.getGameXsize() - getTamX();
+	    }
+	    
+	    if(newY >= Game.getGameYsize()) {
+	    	newY = 0;
+	    } else if(newY < 0) {
+	    	newY = Game.getGameYsize() - getTamY();
+	    }
+	    
+	    if (canMove()) {
+	        setX(newX);
+	        setY(newY);
+	    }
+	}
+	
 	private boolean isCollidingWithWalls(int newX, int newY) {
 	    for (MapElement wall : game.walls) {
 	        if (isColliding(newX, newY, wall)) {

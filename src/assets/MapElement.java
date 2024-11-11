@@ -9,8 +9,8 @@ public class MapElement {
 	private int y = 0;
 	
 	private final static int tileSize = 48;
-	private  int tamX = tileSize;
-	private  int tamY = tileSize;
+	private int tamX = tileSize;
+	private int tamY = tileSize;
 	private Image sprite;
 	
 	public MapElement(Image sprite, int x, int y, int tamX, int tamY) {
@@ -64,7 +64,10 @@ public class MapElement {
 	}
 	
 	public boolean isColliding(MapElement a, MapElement b) {
-		return a.x < b.x + b.tamX && b.x < a.x + a.tamX && a.y < b.y + b.tamY && b.y < a.y + a.tamY;
+		return a.x < b.x + b.tamX &&
+			   b.x < a.x + a.tamX &&
+			   a.y < b.y + b.tamY &&
+			   b.y < a.y + a.tamY;
 	}
 	
 	public boolean isColliding(int x, int y, MapElement wall) {
