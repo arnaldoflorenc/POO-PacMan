@@ -155,15 +155,5 @@ public class Game extends Pane {
 	}
 	
 	public void handleKeyRelease(KeyEvent event) {
-		switch (event.getCode()) {
-        case UP:
-        case DOWN:
-        case LEFT:
-        case RIGHT:
-            pacman.setDir(Entites.Action.DEFAULT); // Configura direção para a direita
-            break;
-        default:
-        	break;
-    }
 	}
 }

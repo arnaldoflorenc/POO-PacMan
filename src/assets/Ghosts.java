@@ -2,6 +2,8 @@ package assets;
 
 import java.util.Random;
 
+import javafx.scene.canvas.GraphicsContext;
+
 public class Ghosts extends Entites {
 
 	// Definindo o comportamento de cada fantasma
@@ -11,17 +13,23 @@ public class Ghosts extends Entites {
 	private int seguir;
 
 	public Ghosts(Game game, String ghost, int x, int y) {
-		super(game, Sprites.getGhostSprite(ghost), x, y, MapElement.getTileSize(), MapElement.getTileSize());
+		super(game, Sprites.getGhostSprite("Right", ghost), x, y, MapElement.getTileSize(), MapElement.getTileSize());
 		this.ghostx = x;
 		this.ghosty = y;
 		this.ghostType = ghost;
 	}
-
+	
+	@Override
+	public void draw(GraphicsContext gc) {
+			
+        gc.drawImage(sprite, x, y, tamX, tamY);
+    }
+	
 	// Método estático para pegar o sprite baseado no tipo de fantasma
 
-	// Método para movimentação dos fantasmas (pode ser customizado mais tarde)
+	
 	public void move(int pacmanX, int pacmanY) {
-		// Lógica de movimentação para o fantasma, como se ele se movesse aleatoriamente
+		
 		if (pacmanIsClose(pacmanX, pacmanY)) {
 			folowPacMan(pacmanX, pacmanY);
 		} else {
@@ -54,15 +62,19 @@ public class Ghosts extends Entites {
 		switch(seguir) {
 			case 0:
 				super.move(-1, 0);//cima
+				this.sprite = Sprites.getGhostSprite(getTipo(), "Up");
 				break;
 			case 1:
 				super.move(0,1);//direita
+				this.sprite = Sprites.getGhostSprite(getTipo(), "Right");
 				break;
 			case 2:
 				super.move(0,-1);//esquerda
+				this.sprite = Sprites.getGhostSprite(getTipo(), "Left");
 				break;
 			case 3:
 				super.move(1,0);//baixo
+				this.sprite = Sprites.getGhostSprite(getTipo(), "Down");
 				break;
 		}
 	}

@@ -37,8 +37,9 @@ public class Entites extends MapElement{
 		int projectedX = getX() + velocidadeX;
 	    int projectedY = getY() + velocidadeY;
 		
-		for (MapElement wall : game.walls) {
-			if (isCollidingWithWalls(projectedX, projectedY)) return false;
+	    if (isCollidingWithWalls(projectedX, projectedY)) {
+			System.out.println("Check");
+			return false;
 		}
 		
 		return true;
@@ -57,23 +58,6 @@ public class Entites extends MapElement{
 	protected void updateVel(Action acao_esp2) {
 		this.velocidadeX = acao_esp2.dx ;
 		this.velocidadeY = acao_esp2.dy ;
-		
-		switch (acao_esp2) {
-			case UP:
-				this.setPacmanSprite("Up");
-				break;
-			case DOWN:
-				this.setPacmanSprite("Down");
-				break;
-			case LEFT:
-				this.setPacmanSprite("Left");
-				break;
-			case RIGHT:
-				this.setPacmanSprite("Right");
-				break;
-			default:
-				break;
-		}
 	}
 	
 	public boolean directionChange() {

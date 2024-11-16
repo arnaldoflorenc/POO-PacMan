@@ -6,8 +6,11 @@ import javafx.scene.image.ImageView;
 public class Sprites {
 
     // Vetores para armazenar os sprites das direções
-    private static Image[] pacmanSprites = new Image[4];  // Up, Down, Left, Right
-    private static Image[] ghostSprites = new Image[4];   // Blue, Orange, Pink, Red
+    private static Image pacmanSprite;  
+    private static Image[] redGhostSprites = new Image[3];   
+    private static Image[] orangeGhostSprites = new Image[3];   
+    private static Image[] pinkGhostSprites = new Image[3];  
+    private static Image[] blueGhostSprites = new Image[3];  
     public static Image wallSprite;
 
     // Inicializando os sprites no carregamento da classe
@@ -15,44 +18,86 @@ public class Sprites {
     	wallSprite = new Image(Sprites.class.getResource("/sprites/wall.png").toString());
     	
         // Carregando os sprites do Pacman
-        pacmanSprites[0] = new Image(Sprites.class.getResource("/sprites/pacmanUp.png").toString());
-        pacmanSprites[1] = new Image(Sprites.class.getResource("/sprites/pacmanDown.png").toString());
-        pacmanSprites[2] = new Image(Sprites.class.getResource("/sprites/pacmanLeft.png").toString());
-        pacmanSprites[3] = new Image(Sprites.class.getResource("/sprites/pacmanRight.png").toString());
+        pacmanSprite = new Image(Sprites.class.getResource("/sprites/pacman_eat.gif").toString());
 
         // Carregando os sprites dos fantasmas
-        ghostSprites[0] = new Image(Sprites.class.getResource("/sprites/blueGhost.png").toString());
-        ghostSprites[1] = new Image(Sprites.class.getResource("/sprites/orangeGhost.png").toString());
-        ghostSprites[2] = new Image(Sprites.class.getResource("/sprites/pinkGhost.png").toString());
-        ghostSprites[3] = new Image(Sprites.class.getResource("/sprites/redGhost.png").toString());
+        redGhostSprites[0] = new Image(Sprites.class.getResource("/sprites/ghost_red_down.gif").toString());
+        redGhostSprites[1] = new Image(Sprites.class.getResource("/sprites/ghost_red_side.gif").toString());
+        redGhostSprites[2] = new Image(Sprites.class.getResource("/sprites/ghost_red_up.gif").toString());
+        
+        orangeGhostSprites[0] = new Image(Sprites.class.getResource("/sprites/ghost_orange_down.gif").toString());
+        orangeGhostSprites[1] = new Image(Sprites.class.getResource("/sprites/ghost_orange_side.gif").toString());
+        orangeGhostSprites[2] = new Image(Sprites.class.getResource("/sprites/ghost_orange_up.gif").toString());
+        
+        pinkGhostSprites[0] = new Image(Sprites.class.getResource("/sprites/ghost_pink_down.gif").toString());
+        pinkGhostSprites[1] = new Image(Sprites.class.getResource("/sprites/ghost_pink_side.gif").toString());
+        pinkGhostSprites[2] = new Image(Sprites.class.getResource("/sprites/ghost_pink_up.gif").toString());
+        
+        blueGhostSprites[0] = new Image(Sprites.class.getResource("/sprites/ghost_blue_down.gif").toString());
+        blueGhostSprites[1] = new Image(Sprites.class.getResource("/sprites/ghost_blue_side.gif").toString());
+        blueGhostSprites[2] = new Image(Sprites.class.getResource("/sprites/ghost_blue_up.gif").toString());
+        
     }
 
     // Métodos para obter os sprites específicos
-    public static Image getPacmanSprite(String direction) {
-        switch (direction) {
-            case "Up":
-                return pacmanSprites[0];
-            case "Down":
-                return pacmanSprites[1];
-            case "Left":
-                return pacmanSprites[2];
-            case "Right":
-                return pacmanSprites[3];
-            default:
-                return null;
-        }
+    public static Image getPacmanSprite() {
+        return pacmanSprite;
     }
 
-    public static Image getGhostSprite(String ghostType) {
+    public static Image getGhostSprite(String direction, String ghostType) {
         switch (ghostType) {
             case "Blue":
-                return ghostSprites[0];
+            	switch (direction) {
+                case "Up":
+                    return blueGhostSprites[3];
+                case "Down":
+                    return blueGhostSprites[0];
+                case "Left":
+                    return blueGhostSprites[2];
+                case "Right":
+                    return blueGhostSprites[2];
+                default:
+                    return null;
+            	}
             case "Orange":
-                return ghostSprites[1];
+            	switch (direction) {
+                case "Up":
+                    return orangeGhostSprites[3];
+                case "Down":
+                    return orangeGhostSprites[0];
+                case "Left":
+                    return orangeGhostSprites[2];
+                case "Right":
+                    return orangeGhostSprites[2];
+                default:
+                    return null;
+            	}
             case "Pink":
-                return ghostSprites[2];
+            	switch (direction) {
+                case "Up":
+                    return pinkGhostSprites[3];
+                case "Down":
+                    return pinkGhostSprites[0];
+                case "Left":
+                    return pinkGhostSprites[2];
+                case "Right":
+                    return pinkGhostSprites[2];
+                default:
+                    return null;
+            	}
             case "Red":
-                return ghostSprites[3];
+            	switch (direction) {
+                case "Up":
+                    return redGhostSprites[3];
+                case "Down":
+                    return redGhostSprites[0];
+                case "Left":
+                    return redGhostSprites[2];
+                case "Right":
+                    return redGhostSprites[2];
+                default:
+                    return null;
+            	}
             default:
                 return null;
         }

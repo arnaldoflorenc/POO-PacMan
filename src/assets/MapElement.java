@@ -5,13 +5,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class MapElement {
-	private int x = 0;
-	private int y = 0;
+	protected int x = 0;
+	protected int y = 0;
 	
 	private final static int tileSize = 48;
-	private int tamX = tileSize;
-	private int tamY = tileSize;
-	private Image sprite;
+	protected int tamX = tileSize;
+	protected int tamY = tileSize;
+	protected Image sprite;
 	
 	public MapElement(Image sprite, int x, int y, int tamX, int tamY) {
 		this.sprite = sprite;
@@ -37,14 +37,6 @@ public class MapElement {
 	
 	public void setSprite(Image sprite) { this.sprite = sprite;	}
 	
-	public void setPacmanSprite(String sprite) {
-		this.sprite = Sprites.getPacmanSprite(sprite);
-	}
-	
-	public void setGhostSprite() {
-		
-	}
-	
 	public void setPowerSprite() {
 		
 	}
@@ -52,6 +44,7 @@ public class MapElement {
 	public void draw(GraphicsContext gc) {
         if (sprite != null) { 
             gc.drawImage(sprite, x, y, tamX, tamY);
+           
         }
     }
 	
