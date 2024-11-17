@@ -92,7 +92,7 @@ public class Game extends Pane {
                     //System.out.println("wall");
                     break;
                 case '2':
-                    points.add(new MapElement(null , x + TILE_SIZE / 2, y + TILE_SIZE / 2, 4, 4));
+                    points.add(new MapElement(Sprites.pointSprite , x , y , TILE_SIZE, TILE_SIZE));
                     //System.out.println("points");
                     break;
                 case 'B':

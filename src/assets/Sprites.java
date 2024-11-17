@@ -12,10 +12,12 @@ public class Sprites {
     private static Image[] pinkGhostSprites = new Image[3];  
     private static Image[] blueGhostSprites = new Image[3];  
     public static Image wallSprite;
+    public static Image pointSprite;
 
     // Inicializando os sprites no carregamento da classe
     static {
     	wallSprite = new Image(Sprites.class.getResource("/sprites/wall.png").toString());
+    	pointSprite = new Image(Sprites.class.getResource("/sprites/points.png").toString());
     	
         // Carregando os sprites do Pacman
         pacmanSprite = new Image(Sprites.class.getResource("/sprites/pacman_eat.gif").toString());
