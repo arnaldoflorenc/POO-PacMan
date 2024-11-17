@@ -5,11 +5,9 @@ import javafx.scene.canvas.GraphicsContext;
 public class Pacman extends Entites {
 	
 	private double rotationAngle = 0;
-	private Action direction;
 	
 	public Pacman(Game game, int x, int y) {
     	super(game, Sprites.getPacmanSprite(), x, y, MapElement.getTileSize(), MapElement.getTileSize());
-    	direction = Action.RIGHT;
     }
 
     // Sobrescrevendo o método move para ter uma movimentação específica para o Pacman
@@ -17,7 +15,7 @@ public class Pacman extends Entites {
     public void move() {
         super.move();
         
-        switch(direction) {
+        switch(getdir()) {
         case UP:
         	rotationAngle = 270;
         	break;
@@ -54,7 +52,5 @@ public class Pacman extends Entites {
     
     
     
-    public void setDir(Action direction) {
-    	this.direction = direction;
-    }
+    
 }

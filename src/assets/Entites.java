@@ -34,15 +34,25 @@ public class Entites extends MapElement{
 	
 	public boolean canMove() {
 		
-		int projectedX = getX() + velocidadeX;
-	    int projectedY = getY() + velocidadeY;
+		Entites projection = new Entites(game, this.getSprite(), this.getX(), this.getY(),this.getTamX(),this.getTamY());
+		boolean colisao = false;
+		projection.Acao_esperada = this.Acao_esperada;
+		projection.velocidadeX = this.velocidadeX;
+		projection.velocidadeY = this.velocidadeY;
+		projection.updateVel(Acao_esperada);
+		projection.setX(projection.getX() + projection.velocidadeX);
+		projection.setY(projection.getY() + projection.velocidadeY);
+		updateVel(this.Acao_atual);  //evita q o pacman trave ao receber ordem de direcao
 		
-	    if (isCollidingWithWalls(projectedX, projectedY)) {
-			System.out.println("Check");
-			return false;
-		}
-		
-		return true;
+	    for(MapElement wall : Game.walls) {
+	    	if (isColliding(projection, wall)) {
+				colisao = true;
+				break;
+			}
+	    }
+			
+		if(!colisao)	return true;
+		return false;
 	}
 
 	public void updateDir() {
@@ -61,12 +71,11 @@ public class Entites extends MapElement{
 	}
 	
 	public boolean directionChange() {
-		return this.Acao_atual != this.Acao_esperada;
+		if(this.Acao_atual != this.Acao_esperada)	return true;
+		return false;
 	}
 	
 	public void move() {
-		
-		updateDir();
 		
 	    int newX = getX() + velocidadeX;
 	    int newY = getY() + velocidadeY;
@@ -83,10 +92,16 @@ public class Entites extends MapElement{
 	    	newY = Game.getGameYsize() - getTamY();
 	    }
 	    
-	    if (canMove()) {
-	        setX(newX);
-	        setY(newY);
-	    }
+	    for (MapElement wall : Game.walls) {
+			if (isColliding(this, wall)) {
+				setX(getX() - velocidadeX);
+				setY(getY() - velocidadeY);
+				return;
+			}
+		}
+	    
+	    setX(newX);
+	    setY(newY);
 	}
 	
 	public void move(int segueX, int segueY) {
