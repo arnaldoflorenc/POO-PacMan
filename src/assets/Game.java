@@ -19,7 +19,7 @@ public class Game extends Pane {
 	private static int gameXSize = Mapa.getXTiles() * TILE_SIZE;
 	private static int gameYSize = Mapa.getYTiles() * TILE_SIZE;
 	
-	public HashSet<MapElement> walls;
+	public static HashSet<MapElement> walls;
 	HashSet<MapElement> points; //arrumar dps
 	HashSet<Ghosts> ghosts;
 	Pacman pacman;
@@ -92,7 +92,7 @@ public class Game extends Pane {
                     //System.out.println("wall");
                     break;
                 case '2':
-                    points.add(new MapElement(null , x + TILE_SIZE / 2, y + TILE_SIZE / 2, 4, 4));
+                    points.add(new MapElement(Sprites.pointSprite , x , y , TILE_SIZE, TILE_SIZE));
                     //System.out.println("points");
                     break;
                 case 'B':
@@ -121,7 +121,10 @@ public class Game extends Pane {
 	}
 	
 	private void update() {
-        pacman.move();
+		if(pacman.canMove()) pacman.updateDir();
+        
+		pacman.move();
+        
         for (Ghosts ghost : ghosts) {
             ghost.move();
         }
@@ -136,24 +139,25 @@ public class Game extends Pane {
 	}
 	
 	public void handleKeyPress(KeyEvent event) {
-	    switch (event.getCode()) {
-	        case UP:
-	            pacman.setDir(Entites.Action.UP); // Configura direção para cima
-	            break;
-	        case DOWN:
-	            pacman.setDir(Entites.Action.DOWN); // Configura direção para baixo
-	            break;
-	        case LEFT:
-	            pacman.setDir(Entites.Action.LEFT); // Configura direção para a esquerda
-	            break;
-	        case RIGHT:
-	            pacman.setDir(Entites.Action.RIGHT); // Configura direção para a direita
-	            break;
-	        default:
-	        	break;
-	    }
+		switch (event.getCode()) {
+        case UP:
+            pacman.setDir(Entites.Action.UP); // Configura direção para cima
+            break;
+        case DOWN:
+            pacman.setDir(Entites.Action.DOWN); // Configura direção para baixo
+            break;
+        case LEFT:
+            pacman.setDir(Entites.Action.LEFT); // Configura direção para a esquerda
+            break;
+        case RIGHT:
+            pacman.setDir(Entites.Action.RIGHT); // Configura direção para a direita
+            break;
+        default:
+        	break;
+    }
 	}
 	
 	public void handleKeyRelease(KeyEvent event) {
+		
 	}
 }
