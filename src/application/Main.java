@@ -19,25 +19,24 @@ public class Main extends Application {
 
 	private static final int BLOCK_SIZE = 40;
 	private static final int CIRCLE_RAD = 6;
+	
 	Game game = new Game();
 
 	@Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) {		
         try {
             // Carregar o arquivo FXML do menu
-            Parent parent = FXMLLoader.load(getClass().getResource("/gui/MainMenu.fxml"));
-            
+            Parent parent = FXMLLoader.load(getClass().getResource("/gui/MainMenu.fxml"));         
             
             // Carregar a cena
-            Scene scene = new Scene(parent);
-
+            Scene scene = new Scene(parent);            
            
-
             // Definir a cena inicial
             primaryStage.setScene(scene);
             primaryStage.setTitle("Pacman Game");
             primaryStage.setResizable(false);
             primaryStage.show();
+        
 
         } catch (Exception e) {
             e.printStackTrace();

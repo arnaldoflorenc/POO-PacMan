@@ -1,5 +1,7 @@
 package gui;
 
+import java.io.File;
+
 import application.Main;
 import assets.Game;
 import assets.Sprites;
@@ -11,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.AudioClip;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -75,10 +78,16 @@ public class MainMenuController {
 	
 	@FXML
 	public void onButtonStartAction() {
+		String buttonFile = "src/sounds/fright_firstloop.wav";
+		
+		AudioClip buttonSound = new AudioClip(new File(buttonFile).toURI().toString());
+		
 		Game game = new Game(); // Instância do jogo
         Scene gameScene = new Scene(game, Game.getGameXsize(), Game.getGameYsize());
         gameScene.setOnKeyPressed(eventKey -> game.handleKeyPress(eventKey));
         gameScene.setOnKeyReleased(eventKey -> game.handleKeyRelease(eventKey));
+        
+        buttonSound.play();
 
         // Obter o estágio atual e definir a nova cena
         Stage stage = (Stage) start.getScene().getWindow();

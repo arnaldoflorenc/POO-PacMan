@@ -11,9 +11,16 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.AudioClip;
+import java.io.File;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 
 
 public class Game extends Pane {
+	
+	private MediaPlayer mediaPlayer;
 	
 	private static final int TILE_SIZE = MapElement.getTileSize();
 	private static int gameXSize = Mapa.getXTiles() * TILE_SIZE;
@@ -37,6 +44,8 @@ public class Game extends Pane {
 		gc = canvas.getGraphicsContext2D();
 		getChildren().add(canvas);
 		
+		// Tocar a música ao iniciar o jogo
+		playStartMusic();
 		
 		loadMap();
 		
@@ -52,6 +61,20 @@ public class Game extends Pane {
         };
         
         gameLoop.start();
+	}
+	
+	private void playStartMusic() {
+		try {
+			String startFile = "src/sounds/start.wav";
+			Media startMusic = new Media(new File(startFile).toURI().toString());
+			mediaPlayer = new MediaPlayer(startMusic);
+			
+			mediaPlayer.play();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("Erro: não foi possível carregar a música de início.");
+		}
 	}
 	
 	private void draw() {
@@ -72,7 +95,6 @@ public class Game extends Pane {
 	
 	
 	public void loadMap() {
-		
 		walls = new HashSet<MapElement>();
 		points = new HashSet<MapElement>();
 		ghosts = new HashSet<Ghosts>();
