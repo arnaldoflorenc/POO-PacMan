@@ -12,6 +12,7 @@ public class MapElement {
 	protected int tamX = tileSize;
 	protected int tamY = tileSize;
 	protected Image sprite;
+	private boolean alive = true;
 	
 	public MapElement(Image sprite, int x, int y, int tamX, int tamY) {
 		this.sprite = sprite;
@@ -63,11 +64,27 @@ public class MapElement {
 			   b.y < a.y + a.tamY;
 	}
 	
+	public boolean isCollidingPoint(MapElement a, MapElement b) {
+		return a.x + 32 < b.x + b.tamX &&
+			   b.x + 32 < a.x + a.tamX &&
+			   a.y + 32 < b.y + b.tamY &&
+			   b.y + 32 < a.y + a.tamY;
+	}
+	
 	public boolean isColliding(int x, int y, MapElement wall) {
 	    return x < wall.getX() + wall.getTamX() &&
 	           x + getTamX() > wall.getX() &&
 	           y < wall.getY() + wall.getTamY() &&
 	           y + getTamY() > wall.getY();
+	}
+	
+	public void kill() {
+		setSprite(null);
+		this.alive = false;
+	}
+	
+	public boolean getStatus() {
+		return alive;
 	}
 	
 	

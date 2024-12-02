@@ -34,6 +34,7 @@ public class Pacman extends Entites {
         }
     }
     
+    
     @Override
     public void draw(GraphicsContext gc) {
         // Salva o estado atual do GraphicsContext

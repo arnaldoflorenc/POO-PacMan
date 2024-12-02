@@ -51,13 +51,22 @@ public class Entites extends MapElement{
 			}
 	    }
 			
-		if(!colisao)	return true;
+		if(!colisao)
+			return true;
+		
 		return false;
 	}
 
 	public void updateDir() {
-		updateVel(this.Acao_esperada);
-		this.Acao_atual = Acao_esperada;
+		if (this.getStatus() == true)
+		{
+			this.Acao_atual = Acao_esperada;
+		}
+		else
+		{
+			this.Acao_atual = Action.DEFAULT;
+		}
+		updateVel(this.Acao_atual);
 	}
 	
 	public void setDir(Action dir){
@@ -85,23 +94,23 @@ public class Entites extends MapElement{
 	    } else if(newX < 0){
 	    	newX = Game.getGameXsize() - getTamX();
 	    }
-	    
+	    else
+	    	setX(newX);
 	    if(newY >= Game.getGameYsize()) {
 	    	newY = 0;
 	    } else if(newY < 0) {
 	    	newY = Game.getGameYsize() - getTamY();
 	    }
+	    else
+	    	setY(newY);
 	    
 	    for (MapElement wall : Game.walls) {
 			if (isColliding(this, wall)) {
-				setX(getX() - velocidadeX);
-				setY(getY() - velocidadeY);
+				setX(newX - velocidadeX);
+				setY(newY - velocidadeY);
 				return;
 			}
 		}
-	    
-	    setX(newX);
-	    setY(newY);
 	}
 	
 	public void move(int segueX, int segueY) {
@@ -129,14 +138,14 @@ public class Entites extends MapElement{
 	    }
 	}
 	
-	private boolean isCollidingWithWalls(int newX, int newY) {
+	/**private boolean isCollidingWithWalls(int newX, int newY) {
 	    for (MapElement wall : game.walls) {
 	        if (isColliding(newX, newY, wall)) {
 	            return true;
 	        }
 	    }
 	    return false; 
-	}
+	}**/
 	
 	public Action getdir(){
 		return Acao_atual;

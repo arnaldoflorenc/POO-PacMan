@@ -23,6 +23,7 @@ public class Game extends Pane {
 	HashSet<MapElement> points; //arrumar dps
 	HashSet<Ghosts> ghosts;
 	Pacman pacman;
+	private int score = 0;
 	
 	protected Image wallImage;
 	
@@ -121,13 +122,35 @@ public class Game extends Pane {
 	}
 	
 	private void update() {
-		if(pacman.canMove()) pacman.updateDir();
+		if(pacman.canMove())
+			pacman.updateDir();
         
 		pacman.move();
-        
+		for (MapElement ghost: this.ghosts)
+			checkDeathCollision(pacman, ghost);
+			
+		registerPoint();
+		
         for (Ghosts ghost : ghosts) {
             ghost.move();
         }
+    }
+	
+    public void registerPoint() {
+    	for (MapElement point : this.points) {
+	        if (pacman.isCollidingPoint(this.pacman, point) && point.getStatus() == true) {
+	            point.kill();
+	            this.score += 2;
+	            System.out.printf("%d\n", this.score);
+	        }
+	    }
+    }
+    
+    public void checkDeathCollision(MapElement a, MapElement b) {
+    		if (a.isColliding(a, b) && a.getStatus() == true) {
+    			a.kill();
+    			System.out.printf("game over");
+    		}
     }
 	
 	public static int getGameXsize() {
