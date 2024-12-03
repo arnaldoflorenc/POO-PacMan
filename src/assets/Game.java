@@ -1,5 +1,6 @@
 package assets;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
@@ -27,7 +28,7 @@ public class Game extends Pane {
 	
 	protected Image wallImage;
 	
-	
+	private Entites.Action[] actions = new Entites.Action[20];
 	private Canvas canvas;
 	private GraphicsContext gc;
 	
@@ -38,7 +39,12 @@ public class Game extends Pane {
 		gc = canvas.getGraphicsContext2D();
 		getChildren().add(canvas);
 		
-		
+		for (int i = 0; i < actions.length; i++) {
+			actions[i] = Entites.getRandomAction();
+		}
+		for (int i = 0; i < actions.length; i++) {
+			System.out.printf("%d, %d", actions[i].dx, actions[i].dy);
+		}
 		loadMap();
 		
 		setOnKeyPressed(this::handleKeyPress);
@@ -121,6 +127,7 @@ public class Game extends Pane {
 		}
 	}
 	
+	
 	private void update() {
 		if(pacman.canMove())
 			pacman.updateDir();
@@ -132,8 +139,24 @@ public class Game extends Pane {
 		registerPoint();
 		
         for (Ghosts ghost : ghosts) {
-            ghost.move();
+        	if (!ghost.canMove(ghost.getAcaoAtual())) {
+        		ghost.setDir(actions[ghost.counter]); //COLISAO
+        		ghost.counter++;
+        		if (ghost.counter == 20)
+            		ghost.counter = 0;
+        	}
+        	if (!ghost.canMove(actions[ghost.counter])) {
+        		ghost.setDir(Entites.getRandomAction()); //COLISAO
+        	}
+        	else
+        	{
+        		ghost.updateDir();
+        	}
+        	
+        	ghost.move();
+        	
         }
+        
         try {
         	Thread.sleep(1);
         }

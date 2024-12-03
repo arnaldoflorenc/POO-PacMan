@@ -1,10 +1,11 @@
 package assets;
 
 import javafx.scene.image.Image;
+import java.util.Random;
 
 public class Entites extends MapElement{
 	
-	protected enum Action {
+	protected static enum Action {
 		UP(0,-1),
 		DOWN(0,1),
 		LEFT(-1,0),
@@ -23,6 +24,7 @@ public class Entites extends MapElement{
 	protected Action Acao_passada = Action.DEFAULT;
 	protected Action Acao_atual = Action.DEFAULT;
 	private Game game;
+	protected int counter = 0;
 	
 	public int velocidadeX = 0;
 	public int velocidadeY = 0;
@@ -30,6 +32,20 @@ public class Entites extends MapElement{
 	public Entites (Game game, Image sprite, int x, int y, int tamanhoX, int tamanhoY){
 		super(sprite, x, y, tamanhoX, tamanhoY);
 		this.game = game;
+	}
+	
+	protected static Action getRandomAction() {
+	    Action[] actions = Action.values(); // Obtém todos os valores da enum
+	    Random random = new Random();      // Instância de Random
+	    return actions[random.nextInt(actions.length - 1)]; // Exclui DEFAULT (último)
+	}
+	
+	protected Action getAcaoEsperada() {
+		return Acao_esperada;
+	}
+	
+	protected Action getAcaoAtual() {
+		return Acao_atual;
 	}
 	
 	public boolean canMove() {
@@ -40,6 +56,30 @@ public class Entites extends MapElement{
 		projection.velocidadeX = this.velocidadeX;
 		projection.velocidadeY = this.velocidadeY;
 		projection.updateVel(Acao_esperada);
+		projection.setX(projection.getX() + projection.velocidadeX);
+		projection.setY(projection.getY() + projection.velocidadeY);
+		updateVel(this.Acao_atual);  //evita q o pacman trave ao receber ordem de direcao
+		
+	    for(MapElement wall : Game.walls) {
+	    	if (isColliding(projection, wall)) {
+				colisao = true;
+				break;
+			}
+	    }
+			
+		if(!colisao)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean canMove(Action action) {
+		Entites projection = new Entites(game, this.getSprite(), this.getX(), this.getY(),this.getTamX(),this.getTamY());
+		boolean colisao = false;
+		projection.Acao_esperada = action;
+		projection.velocidadeX = this.velocidadeX;
+		projection.velocidadeY = this.velocidadeY;
+		projection.updateVel(action);
 		projection.setX(projection.getX() + projection.velocidadeX);
 		projection.setY(projection.getY() + projection.velocidadeY);
 		updateVel(this.Acao_atual);  //evita q o pacman trave ao receber ordem de direcao

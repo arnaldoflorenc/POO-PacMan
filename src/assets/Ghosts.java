@@ -2,6 +2,7 @@ package assets;
 
 import java.util.Random;
 
+import assets.Entites.Action;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Ghosts extends Entites {
@@ -17,6 +18,8 @@ public class Ghosts extends Entites {
 		this.ghostx = x;
 		this.ghosty = y;
 		this.ghostType = ghost;
+		Acao_esperada = Action.DOWN;
+		Acao_atual = Action.RIGHT;
 	}
 	
 	@Override
