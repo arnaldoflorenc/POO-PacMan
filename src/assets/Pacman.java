@@ -8,7 +8,7 @@ public class Pacman extends Entites {
 	private static int lives = 3;
 	
 	public Pacman(Game game, int x, int y) {
-    	super(game, Sprites.getPacmanSprite(), x, y, MapElement.getTileSize(), MapElement.getTileSize());
+    	super(game, Sprites.getPacmanSprite(), x, y, Mapa.getTileSize(), Mapa.getTileSize());
     }
 
     // Sobrescrevendo o método move para ter uma movimentação específica para o Pacman
@@ -63,6 +63,5 @@ public class Pacman extends Entites {
     public static int getLives() {
     	return lives;
     }
-    
     
 }

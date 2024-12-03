@@ -13,7 +13,7 @@ public class Ghosts extends Entites {
 	private int seguir;
 
 	public Ghosts(Game game, String ghost, int x, int y) {
-		super(game, Sprites.getGhostSprite("Right", ghost), x, y, MapElement.getTileSize(), MapElement.getTileSize());
+		super(game, Sprites.getGhostSprite("Right", ghost), x, y, Mapa.getTileSize(), Mapa.getTileSize());
 		this.ghostx = x;
 		this.ghosty = y;
 		this.ghostType = ghost;

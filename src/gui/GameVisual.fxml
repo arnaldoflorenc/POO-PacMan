@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="gui.GameVisualController">
+
+    <top>
+        <HBox spacing="20" style="-fx-padding: 10; -fx-background-color: black;">
+            <Label fx:id="livesLabel" text="Vidas: 3" style="-fx-font-size: 20px; -fx-text-fill: yellow;"/>
+             <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <Label fx:id="pointsLabel" text="Pontos: 0" style="-fx-font-size: 20px; -fx-text-fill: yellow; -fx-alignment: center-right;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <Canvas fx:id="gameCanvas"/>
+    </center>
+    
+</BorderPane>

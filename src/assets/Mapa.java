@@ -6,6 +6,7 @@ import java.util.List;
 public class Mapa {
 	private static int yTiles = 21;
 	private static int xTiles = 21;
+	private final static int tileSize = 48;
 	protected static List<String> Maze = new ArrayList<>();
 	
 	public Mapa() {
@@ -35,6 +36,10 @@ public class Mapa {
 	
 	public List<String> iniMaze(){
 		 return Maze;
+	}
+	
+	public static int getTileSize() {
+		return tileSize;
 	}
 	
 	public static int getYTiles() {
