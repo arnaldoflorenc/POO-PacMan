@@ -5,7 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Pacman extends Entites {
 	
 	private double rotationAngle = 0;
-	private static int lives = 3;
+	private static int lives = 1;
 	
 	public Pacman(Game game, int x, int y) {
     	super(game, Sprites.getPacmanSprite(), x, y, Mapa.getTileSize(), Mapa.getTileSize());
