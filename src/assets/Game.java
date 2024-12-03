@@ -126,7 +126,7 @@ public class Game extends Pane {
 			pacman.updateDir();
         
 		pacman.move();
-		for (MapElement ghost: this.ghosts)
+		for (Entites ghost: this.ghosts)
 			checkDeathCollision(pacman, ghost);
 			
 		registerPoint();
@@ -146,10 +146,30 @@ public class Game extends Pane {
 	    }
     }
     
-    public void checkDeathCollision(MapElement a, MapElement b) {
+    public void checkDeathCollision(Pacman a, Entites b) {
     		if (a.isColliding(a, b) && a.getStatus() == true) {
     			a.kill();
-    			System.out.printf("game over");
+    			if (Pacman.getLives() >= 0) {
+    				
+    				for (int l = 0; l < Mapa.getYTiles(); l++) {
+    					for (int c = 0; c < Mapa.getXTiles(); c++) {
+    						String linha = Mapa.Maze.get(l);
+    						char tileMapChar = linha.charAt(c);
+    						
+    						int x = c * MapElement.getTileSize();
+    						int y = l * MapElement.getTileSize();
+    						
+    						if (tileMapChar == 'C') {
+    							System.out.printf("%d , %d\n", x, y);
+    							a.respawn(x, y);
+    						}
+    					}
+    				}
+    			}
+    			else
+    			{
+    				System.out.printf("Game Over\n");
+    			}
     		}
     }
 	

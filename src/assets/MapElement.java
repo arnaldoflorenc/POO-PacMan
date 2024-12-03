@@ -11,7 +11,7 @@ public class MapElement {
 	private final static int tileSize = 48;
 	protected int tamX = tileSize;
 	protected int tamY = tileSize;
-	protected Image sprite;
+	protected Image sprite, oldSprite;
 	private boolean alive = true;
 	
 	public MapElement(Image sprite, int x, int y, int tamX, int tamY) {
@@ -49,10 +49,6 @@ public class MapElement {
         }
     }
 	
-	public void eraseSprite() {
-		this.sprite = null;
-	}
-	
 	public static int getTileSize() {
 		return tileSize;
 	}
@@ -79,8 +75,16 @@ public class MapElement {
 	}
 	
 	public void kill() {
+		oldSprite = getSprite();
 		setSprite(null);
 		this.alive = false;
+	}
+	
+	public void revive(int x, int y) {
+		setSprite(oldSprite);
+		this.alive = true;
+		this.setX(x);
+		this.setY(y);
 	}
 	
 	public boolean getStatus() {

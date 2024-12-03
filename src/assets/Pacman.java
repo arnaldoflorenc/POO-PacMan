@@ -5,6 +5,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Pacman extends Entites {
 	
 	private double rotationAngle = 0;
+	private static int lives = 3;
 	
 	public Pacman(Game game, int x, int y) {
     	super(game, Sprites.getPacmanSprite(), x, y, MapElement.getTileSize(), MapElement.getTileSize());
@@ -51,7 +52,17 @@ public class Pacman extends Entites {
         gc.restore();
     }
     
+    @Override
+    public void respawn(int x, int y) {
+    	if (lives > 0) {
+    		lives--;
+    		this.revive(x, y);
+    	}
+    }
     
+    public static int getLives() {
+    	return lives;
+    }
     
     
 }

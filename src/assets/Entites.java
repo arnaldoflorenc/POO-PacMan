@@ -79,6 +79,11 @@ public class Entites extends MapElement{
 		this.velocidadeY = acao_esp2.dy ;
 	}
 	
+    public void respawn(int x, int y) {
+		this.setX(x);
+		this.setY(y);
+    }
+	
 	public boolean directionChange() {
 		if(this.Acao_atual != this.Acao_esperada)	return true;
 		return false;
