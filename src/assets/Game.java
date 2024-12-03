@@ -134,6 +134,12 @@ public class Game extends Pane {
         for (Ghosts ghost : ghosts) {
             ghost.move();
         }
+        try {
+        	Thread.sleep(1);
+        }
+			catch (InterruptedException e) {
+	        System.out.println("A thread foi interrompida!");
+		}
     }
 	
     public void registerPoint() {
