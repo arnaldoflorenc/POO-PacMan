@@ -14,6 +14,9 @@ public class Sprites {
     public static Image wallSprite;
     public static Image pointSprite;
 
+    
+    
+    
     // Inicializando os sprites no carregamento da classe
     static {
     	wallSprite = new Image(Sprites.class.getResource("/sprites/wall.png").toString());
