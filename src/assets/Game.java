@@ -31,6 +31,7 @@ public class Game extends Pane {
 	protected Image wallImage;
 	
 	private Entites.Action[] actions = new Entites.Action[20];
+	private static Entites.Action action = Entites.getRandomAction();
 	private Canvas canvas;
 
 	private GraphicsContext gc;
@@ -159,13 +160,11 @@ public class Game extends Pane {
 		
         for (Ghosts ghost : ghosts) {
         	if (!ghost.canMove(ghost.getAcaoAtual())) {
-        		ghost.setDir(actions[ghost.counter]); //COLISAO
-        		ghost.counter++;
-        		if (ghost.counter == 20)
-            		ghost.counter = 0;
+        		action = Entites.getRandomAction();
+        		ghost.setDir(action); //COLISAO
         	}
-        	if (!ghost.canMove(actions[ghost.counter])) {
-        		ghost.setDir(Entites.getRandomAction()); //COLISAO
+        	if (!ghost.canMove(action)) {
+        		ghost.setDir(Entites.getRandomAction()); //MEIO
         	}
         	else
         	{
