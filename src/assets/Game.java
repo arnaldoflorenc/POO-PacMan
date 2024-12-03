@@ -30,6 +30,7 @@ public class Game extends Pane {
 	HashSet<MapElement> points; //arrumar dps
 	HashSet<Ghosts> ghosts;
 	Pacman pacman;
+	private int score = 0;
 	
 	protected Image wallImage;
 	
@@ -37,15 +38,17 @@ public class Game extends Pane {
 	private Canvas canvas;
 	private GraphicsContext gc;
 	
+	// Carregar os sons
+	AudioClip pointSound = new AudioClip(new File("src/sounds/eat_dot_0.wav").toURI().toString());
+	AudioClip pointSound2 = new AudioClip(new File("src/sounds/eat_dot_1.wav").toURI().toString());
+	private boolean togglePointSound = true;	// Controla o som de ponto que será tocado
+	
 	public Game() {
 		setPrefSize(gameXSize, gameYSize);
 		
 		canvas = new Canvas(gameXSize,gameYSize);
 		gc = canvas.getGraphicsContext2D();
 		getChildren().add(canvas);
-		
-		// Tocar a música ao iniciar o jogo
-		playStartMusic();
 		
 		loadMap();
 		
@@ -61,20 +64,6 @@ public class Game extends Pane {
         };
         
         gameLoop.start();
-	}
-	
-	private void playStartMusic() {
-		try {
-			String startFile = "src/sounds/start.wav";
-			Media startMusic = new Media(new File(startFile).toURI().toString());
-			mediaPlayer = new MediaPlayer(startMusic);
-			
-			mediaPlayer.play();
-			
-		} catch(Exception e) {
-			e.printStackTrace();
-			System.out.println("Erro: não foi possível carregar a música de início.");
-		}
 	}
 	
 	private void draw() {
@@ -98,7 +87,6 @@ public class Game extends Pane {
 		walls = new HashSet<MapElement>();
 		points = new HashSet<MapElement>();
 		ghosts = new HashSet<Ghosts>();
-			
 				
 		for (int l = 0; l < Mapa.getYTiles(); l++) {
 			for (int c = 0; c < Mapa.getXTiles(); c++) {
@@ -143,13 +131,65 @@ public class Game extends Pane {
 	}
 	
 	private void update() {
-		if(pacman.canMove()) pacman.updateDir();
+		if(pacman.canMove())
+			pacman.updateDir();
         
 		pacman.move();
-        
+		for (Entites ghost: this.ghosts)
+			checkDeathCollision(pacman, ghost);
+			
+		registerPoint();
+		
         for (Ghosts ghost : ghosts) {
             ghost.move();
         }
+    }
+	
+    public void registerPoint() {
+    	for (MapElement point : this.points) {
+	        if (pacman.isCollidingPoint(this.pacman, point) && point.getStatus() == true) {
+	            point.kill();
+	            this.score += 2;
+	            System.out.printf("%d\n", this.score);
+	            
+	            if(togglePointSound) {
+	            	pointSound.play();
+	            	
+	            } else {
+	            	pointSound2.play();
+	            }
+	            
+	            togglePointSound = !togglePointSound;	// Alterna o tipo de áudio
+	        }
+	    }
+    }
+    
+    public void checkDeathCollision(Pacman a, Entites b) {
+    		if (a.isColliding(a, b) && a.getStatus() == true) {
+    			a.kill();
+    			if (Pacman.getLives() > 0) {
+    				
+    				for (int l = 0; l < Mapa.getYTiles(); l++) {
+    					for (int c = 0; c < Mapa.getXTiles(); c++) {
+    						String linha = Mapa.Maze.get(l);
+    						char tileMapChar = linha.charAt(c);
+    						
+    						int x = c * MapElement.getTileSize();
+    						int y = l * MapElement.getTileSize();
+    						
+    						if (tileMapChar == 'C') {
+    							System.out.printf("%d , %d\n", x, y);
+    							System.out.printf("%d\n", a.getLives());
+    							a.respawn(x, y);
+    						}
+    					}
+    				}
+    			}
+    			else
+    			{
+    				System.out.printf("Game Over\n");
+    			}
+    		}
     }
 	
 	public static int getGameXsize() {
