@@ -149,7 +149,7 @@ public class Game extends Pane {
     public void checkDeathCollision(Pacman a, Entites b) {
     		if (a.isColliding(a, b) && a.getStatus() == true) {
     			a.kill();
-    			if (Pacman.getLives() >= 0) {
+    			if (Pacman.getLives() > 0) {
     				
     				for (int l = 0; l < Mapa.getYTiles(); l++) {
     					for (int c = 0; c < Mapa.getXTiles(); c++) {
@@ -161,6 +161,7 @@ public class Game extends Pane {
     						
     						if (tileMapChar == 'C') {
     							System.out.printf("%d , %d\n", x, y);
+    							System.out.printf("%d\n", a.getLives());
     							a.respawn(x, y);
     						}
     					}
