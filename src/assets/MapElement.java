@@ -8,9 +8,8 @@ public class MapElement {
 	protected int x = 0;
 	protected int y = 0;
 	
-	private final static int tileSize = 48;
-	protected int tamX = tileSize;
-	protected int tamY = tileSize;
+	protected int tamX = Mapa.getTileSize();
+	protected int tamY = Mapa.getTileSize();
 	protected Image sprite, oldSprite;
 	private boolean alive = true;
 	
@@ -49,9 +48,7 @@ public class MapElement {
         }
     }
 	
-	public static int getTileSize() {
-		return tileSize;
-	}
+	
 	
 	public boolean isColliding(MapElement a, MapElement b) {
 		return a.x < b.x + b.tamX &&
@@ -87,9 +84,11 @@ public class MapElement {
 		this.setY(y);
 	}
 	
-	public boolean getStatus() {
+	public boolean isAlive() {
 		return alive;
 	}
 	
-	
+	public void setDeath() {
+    	this.alive = false;
+	}
 }

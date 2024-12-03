@@ -98,7 +98,7 @@ public class Entites extends MapElement{
 	}
 
 	public void updateDir() {
-		if (this.getStatus() == true)
+		if (this.isAlive() == true)
 		{
 			this.Acao_atual = Acao_esperada;
 		}
@@ -135,14 +135,14 @@ public class Entites extends MapElement{
 	    int newY = getY() + velocidadeY;
 	    
 	    if(newX >= Game.getGameXsize()) {
-	    	newX =  1 - MapElement.getTileSize();
-	    } else if(newX < 1 - MapElement.getTileSize()){
+	    	newX =  1 - Mapa.getTileSize();
+	    } else if(newX < 1 - Mapa.getTileSize()){
 	    	newX = Game.getGameXsize() - 1;
 	    }
 	    	setX(newX);
 	    if(newY >= Game.getGameYsize()) {
-	    	newY = 1 - MapElement.getTileSize();
-	    } else if(newY < 1 - MapElement.getTileSize()) {
+	    	newY = 1 - Mapa.getTileSize();
+	    } else if(newY < 1 - Mapa.getTileSize()) {
 	    	newY = Game.getGameYsize() - 1;
 	    }
 	    	setY(newY);

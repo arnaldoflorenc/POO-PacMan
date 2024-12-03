@@ -14,11 +14,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	private Mapa map = new Mapa();
-	private List<String> levelData = new ArrayList<>();
-
-	private static final int BLOCK_SIZE = 40;
-	private static final int CIRCLE_RAD = 6;
+	Mapa map = new Mapa();
 	Game game = new Game();
 
 	@Override

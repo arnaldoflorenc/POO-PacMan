@@ -2,21 +2,22 @@ package assets;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import gui.GameVisualController;
 import javafx.animation.AnimationTimer;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
-import javafx.scene.image.ImageView;
 
 
 public class Game extends Pane {
 	
-	private static final int TILE_SIZE = MapElement.getTileSize();
+	private static final int TILE_SIZE = Mapa.getTileSize();
 	private static int gameXSize = Mapa.getXTiles() * TILE_SIZE;
 	private static int gameYSize = Mapa.getYTiles() * TILE_SIZE;
 	
@@ -24,17 +25,22 @@ public class Game extends Pane {
 	HashSet<MapElement> points; //arrumar dps
 	HashSet<Ghosts> ghosts;
 	Pacman pacman;
-	private int score = 0;
+	private final IntegerProperty score = new SimpleIntegerProperty(0);
+	private final IntegerProperty lives = new SimpleIntegerProperty();
 	
 	protected Image wallImage;
 	
 	private Entites.Action[] actions = new Entites.Action[20];
 	private Canvas canvas;
+
 	private GraphicsContext gc;
+	private AnimationTimer gameLoop;
+	private GameVisualController controller;
 	
 	public Game() {
 		setPrefSize(gameXSize, gameYSize);
 		
+
 		canvas = new Canvas(gameXSize,gameYSize);
 		gc = canvas.getGraphicsContext2D();
 		getChildren().add(canvas);
@@ -45,21 +51,34 @@ public class Game extends Pane {
 		for (int i = 0; i < actions.length; i++) {
 			System.out.printf("%d, %d", actions[i].dx, actions[i].dy);
 		}
+
 		loadMap();
-		
-		setOnKeyPressed(this::handleKeyPress);
-        setOnKeyReleased(this::handleKeyRelease);
-        
-        AnimationTimer gameLoop = new AnimationTimer() {
-        	@Override
-        	public void handle(long now) {
-        		update();
-        		draw();
-        	}
+	}
+	
+	public void startGameLoop() {
+        gameLoop = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+            	if (allPoints() || !pacman.isAlive()) {
+                    stopGameLoop();
+                    endGame(); // Método para lidar com o término do jogo
+                    return;
+                }
+            	
+            	lives.set(Pacman.getLives());
+                update();
+                draw();
+            }
         };
-        
+
         gameLoop.start();
 	}
+	
+	public void stopGameLoop() {
+        if (gameLoop != null) {
+            gameLoop.stop();
+        }
+    }
 	
 	private void draw() {
 		gc.setFill(Color.BLACK);
@@ -90,8 +109,8 @@ public class Game extends Pane {
 				String linha = Mapa.Maze.get(l);
 				char tileMapChar = linha.charAt(c);
 				
-				int x = c * MapElement.getTileSize();
-				int y = l * MapElement.getTileSize();
+				int x = c * Mapa.getTileSize();
+				int y = l * Mapa.getTileSize();
 				
 				switch (tileMapChar) {
                 case '1': 
@@ -167,16 +186,22 @@ public class Game extends Pane {
 	
     public void registerPoint() {
     	for (MapElement point : this.points) {
-	        if (pacman.isCollidingPoint(this.pacman, point) && point.getStatus() == true) {
+	        if (pacman.isCollidingPoint(this.pacman, point) && point.isAlive() == true) {
 	            point.kill();
-	            this.score += 2;
-	            System.out.printf("%d\n", this.score);
+	            score.set(score.get() + 2);
 	        }
 	    }
     }
     
+    private boolean allPoints() {
+    	for (MapElement point : this.points) {
+	        if(point.isAlive()) return false;
+	    }
+    	return true;
+    }
+    
     public void checkDeathCollision(Pacman a, Entites b) {
-    		if (a.isColliding(a, b) && a.getStatus() == true) {
+    		if (a.isColliding(a, b) && a.isAlive() == true) {
     			a.kill();
     			if (Pacman.getLives() > 0) {
     				
@@ -185,8 +210,8 @@ public class Game extends Pane {
     						String linha = Mapa.Maze.get(l);
     						char tileMapChar = linha.charAt(c);
     						
-    						int x = c * MapElement.getTileSize();
-    						int y = l * MapElement.getTileSize();
+    						int x = c * Mapa.getTileSize();
+    						int y = l * Mapa.getTileSize();
     						
     						if (tileMapChar == 'C') {
     							System.out.printf("%d , %d\n", x, y);
@@ -198,7 +223,7 @@ public class Game extends Pane {
     			}
     			else
     			{
-    				System.out.printf("Game Over\n");
+    				pacman.setDeath();
     			}
     		}
     }
@@ -233,4 +258,26 @@ public class Game extends Pane {
 	public void handleKeyRelease(KeyEvent event) {
 		
 	}
+	
+	public void setCanvas(Canvas canvas) {
+        this.gc = canvas.getGraphicsContext2D();
+    }
+	
+	public void setController(GameVisualController controller) {
+		this.controller = controller;
+	}
+	
+	public IntegerProperty pointsProperty() {
+        return score;
+    }
+
+    public IntegerProperty livesProperty() {
+        return lives;
+    }
+    
+    
+    
+    private void endGame() {
+    	controller.endGame(); // Notifica o controlador para redirecionar
+    }
 }
