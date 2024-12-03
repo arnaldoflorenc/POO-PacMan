@@ -9,7 +9,7 @@ public class Mapa {
 	protected static List<String> Maze = new ArrayList<>();
 	
 	public Mapa() {
-		Maze.add("111111111111111111111");
+		Maze.add("111111111121111111111");
 		Maze.add("122222222222222222221");
 		Maze.add("121121111212111121121");
 		Maze.add("121121111212111121121");
@@ -29,7 +29,7 @@ public class Mapa {
 		Maze.add("112121211111112121211");
 		Maze.add("122221222212222122221");
 		Maze.add("122222222222222222221");
-		Maze.add("111111111111111111111");
+		Maze.add("111111111121111111111");
 	}
 	
 	

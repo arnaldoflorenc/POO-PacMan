@@ -95,18 +95,16 @@ public class Entites extends MapElement{
 	    int newY = getY() + velocidadeY;
 	    
 	    if(newX >= Game.getGameXsize()) {
-	    	newX = 0;
-	    } else if(newX < 0){
-	    	newX = Game.getGameXsize() - getTamX();
+	    	newX =  1 - MapElement.getTileSize();
+	    } else if(newX < 1 - MapElement.getTileSize()){
+	    	newX = Game.getGameXsize() - 1;
 	    }
-	    else
 	    	setX(newX);
 	    if(newY >= Game.getGameYsize()) {
-	    	newY = 0;
-	    } else if(newY < 0) {
-	    	newY = Game.getGameYsize() - getTamY();
+	    	newY = 1 - MapElement.getTileSize();
+	    } else if(newY < 1 - MapElement.getTileSize()) {
+	    	newY = Game.getGameYsize() - 1;
 	    }
-	    else
 	    	setY(newY);
 	    
 	    for (MapElement wall : Game.walls) {
