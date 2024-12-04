@@ -5,6 +5,8 @@ import java.util.HashSet;
 
 import gui.GameVisualController;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;
@@ -13,6 +15,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
+import javafx.scene.media.AudioClip;
+import java.io.File;
 
 
 public class Game extends Pane {
@@ -21,8 +26,12 @@ public class Game extends Pane {
 	private static int gameXSize = Mapa.getXTiles() * TILE_SIZE;
 	private static int gameYSize = Mapa.getYTiles() * TILE_SIZE;
 	
+	private AudioClip eatDot0 = new AudioClip(new File("src/sounds/eat_dot_0.wav").toURI().toString());
+	private AudioClip eatDot1 = new AudioClip(new File("src/sounds/eat_dot_1.wav").toURI().toString());
+	private boolean togglePointSound = true;		// Alterna entre os sons dos pontos
+	
 	public static HashSet<MapElement> walls;
-	HashSet<MapElement> points; //arrumar dps
+	HashSet<MapElement> points;
 	HashSet<Ghosts> ghosts;
 	Pacman pacman;
 	private final IntegerProperty score = new SimpleIntegerProperty(0);
@@ -30,7 +39,6 @@ public class Game extends Pane {
 	
 	protected Image wallImage;
 	
-	private Entites.Action[] actions = new Entites.Action[20];
 	private static Entites.Action action = Entites.getRandomAction();
 	private Canvas canvas;
 
@@ -45,13 +53,6 @@ public class Game extends Pane {
 		canvas = new Canvas(gameXSize,gameYSize);
 		gc = canvas.getGraphicsContext2D();
 		getChildren().add(canvas);
-		
-		for (int i = 0; i < actions.length; i++) {
-			actions[i] = Entites.getRandomAction();
-		}
-		for (int i = 0; i < actions.length; i++) {
-			System.out.printf("%d, %d", actions[i].dx, actions[i].dy);
-		}
 
 		loadMap();
 	}
@@ -60,11 +61,19 @@ public class Game extends Pane {
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-            	if (allPoints() || !pacman.isAlive()) {
+            	if (allPoints() || Pacman.getLives() == 0) { ///////////////////////////
                     stopGameLoop();
+                    Ghosts.stopGhostSound();
                     endGame(); // Método para lidar com o término do jogo
                     return;
                 }
+            	
+            	// Som dos fantasmas
+            	if (pacman.isAlive()) {
+            	    Ghosts.startGhostSound();
+            	} else {
+            	    Ghosts.stopGhostSound();
+            	}
             	
             	lives.set(Pacman.getLives());
                 update();
@@ -155,8 +164,10 @@ public class Game extends Pane {
 		pacman.move();
 		registerPoint();
 		
-		for (Entites ghost: this.ghosts)
-			checkDeathCollision(pacman, ghost);
+		if (pacman.isAlive()) {
+			for (Entites ghost: this.ghosts)
+				checkDeathCollision(pacman, ghost);
+		}
 			
 		
         for (Ghosts ghost : ghosts) {
@@ -193,6 +204,14 @@ public class Game extends Pane {
 	        if (pacman.isCollidingPoint(this.pacman, point) && point.isAlive() == true) {
 	            point.kill();
 	            score.set(score.get() + 2);
+	            
+	            if(togglePointSound) {
+	            	eatDot0.play();
+	            	
+	            } else {
+	            	eatDot1.play();
+	            }
+	            togglePointSound = !togglePointSound;    
 	        }
 	    }
     }
@@ -205,32 +224,49 @@ public class Game extends Pane {
     }
     
     public void checkDeathCollision(Pacman a, Entites b) {
-    		if (a.isColliding(a, b) && a.isAlive() == true) {
-    			a.kill();
-    			if (Pacman.getLives() > 0) {
-    				
-    				for (int l = 0; l < Mapa.getYTiles(); l++) {
-    					for (int c = 0; c < Mapa.getXTiles(); c++) {
-    						String linha = Mapa.Maze.get(l);
-    						char tileMapChar = linha.charAt(c);
-    						
-    						int x = c * Mapa.getTileSize();
-    						int y = l * Mapa.getTileSize();
-    						
-    						if (tileMapChar == 'C') {
-    							System.out.printf("%d , %d\n", x, y);
-    							System.out.printf("%d\n", a.getLives());
-    							a.respawn(x, y);
-    						}
-    					}
-    				}
-    			}
-    			else
-    			{
-    				pacman.setDeath();
-    			}
-    		}
-    }
+		if (a.isColliding(a, b) && a.isAlive() == true) {
+			a.kill();
+			
+			
+			a.setSprite(Sprites.getPacmanDeathSprite());
+            Pacman.deathSound.play();
+            	
+            // Define o sprite de morte e toca o som
+        	double deathTime = 1;
+        	Timeline respawnDelay = new Timeline(new KeyFrame(Duration.seconds(deathTime), event->{
+        		a.setSprite(Sprites.getPacmanSprite());
+        		if (Pacman.getLives() > 0) {     
+        			
+        			for (int l = 0; l < Mapa.getYTiles(); l++) {
+        				for (int c = 0; c < Mapa.getXTiles(); c++) {
+        					String linha = Mapa.Maze.get(l);
+        					char tileMapChar = linha.charAt(c);
+        					int x = c * Mapa.getTileSize();
+        					int y = l * Mapa.getTileSize();
+        					
+        					
+        					if (tileMapChar == 'C') {
+        						
+        						a.respawn(x,y);
+        					}
+        				}
+        			}
+        		}
+        		else
+        		{
+        			a.setDeath();
+        		}
+        	}));
+        	respawnDelay.setCycleCount(1);
+        	respawnDelay.play();
+            	
+			
+
+
+      
+                
+		}
+}
 	
 	public static int getGameXsize() {
 		return gameXSize;

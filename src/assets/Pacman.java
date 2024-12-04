@@ -1,14 +1,22 @@
 package assets;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.animation.*;
+import javafx.scene.media.AudioClip;
+import javafx.util.Duration;
+import javafx.scene.image.Image;
 
 public class Pacman extends Entites {
 	
 	private double rotationAngle = 0;
 	private static int lives = 3;
+
+	protected static AudioClip deathSound;
 	
 	public Pacman(Game game, int x, int y) {
     	super(game, Sprites.getPacmanSprite(), x, y, Mapa.getTileSize(), Mapa.getTileSize());
+    	
+    	deathSound = new AudioClip(Pacman.class.getResource("/sounds/death_0.wav").toString());
     }
 
     // Sobrescrevendo o método move para ter uma movimentação específica para o Pacman
@@ -43,7 +51,11 @@ public class Pacman extends Entites {
 
         // Translada para o centro do Pacman (para aplicar rotação no centro)
         gc.translate(getX() + getTamX() / 2, getY() + getTamY() / 2);
-        gc.rotate(rotationAngle);  // Aplica a rotação com base no ângulo
+        
+        
+        if (isAlive()) {
+            gc.rotate(rotationAngle);  // Aplica a rotação somente quando está vivo
+        }
 
         // Desenha o sprite rotacionado
         gc.drawImage(getSprite(), -getTamX() / 2, -getTamY() / 2, getTamX(), getTamY());  // Ajusta a posição para o centro
@@ -55,13 +67,22 @@ public class Pacman extends Entites {
     @Override
     public void respawn(int x, int y) {
     	if (lives > 0) {
-    		lives--;
-    		this.revive(x, y);
-    	}
+            lives--;
+                // Revive o Pacman, redefinindo o sprite para o original
+                this.setAlive();
+                this.revive(x, y);
+                //setSprite(Sprites.getPacmanSprite());
+        }
     }
+    
+    
     
     public static int getLives() {
     	return lives;
+    }
+    
+    public static void resetLives() {
+    	lives = 3;
     }
     
 }

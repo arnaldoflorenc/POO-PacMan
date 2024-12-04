@@ -6,7 +6,8 @@ import javafx.scene.image.ImageView;
 public class Sprites {
 
     // Vetores para armazenar os sprites das direções
-    private static Image pacmanSprite;  
+    private static Image pacmanSprite; 
+    private static Image pacmanDeathSprite;
     private static Image[] redGhostSprites = new Image[3];   
     private static Image[] orangeGhostSprites = new Image[3];   
     private static Image[] pinkGhostSprites = new Image[3];  
@@ -24,6 +25,7 @@ public class Sprites {
     	
         // Carregando os sprites do Pacman
         pacmanSprite = new Image(Sprites.class.getResource("/sprites/pacman_eat.gif").toString());
+        pacmanDeathSprite = new Image(Sprites.class.getResource("/sprites/pacman_death.gif").toString());
 
         // Carregando os sprites dos fantasmas
         redGhostSprites[0] = new Image(Sprites.class.getResource("/sprites/ghost_red_down.gif").toString());
@@ -47,6 +49,10 @@ public class Sprites {
     // Métodos para obter os sprites específicos
     public static Image getPacmanSprite() {
         return pacmanSprite;
+    }
+    
+    public static Image getPacmanDeathSprite() {
+    	return pacmanDeathSprite;
     }
 
     public static Image getGhostSprite(String direction, String ghostType) {

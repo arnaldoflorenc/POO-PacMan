@@ -4,8 +4,11 @@ import java.util.Random;
 
 import assets.Entites.Action;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.media.AudioClip;
 
 public class Ghosts extends Entites {
+	
+	private static AudioClip ghostSound;
 
 	// Definindo o comportamento de cada fantasma
 
@@ -20,12 +23,31 @@ public class Ghosts extends Entites {
 		this.ghostType = ghost;
 		Acao_esperada = Action.UP;
 		Acao_atual = Action.RIGHT;
+		
+		 // Carregar o som do fantasma
+        if (ghostSound == null) {
+            ghostSound = new AudioClip(Ghosts.class.getResource("/sounds/siren0.wav").toString());
+            ghostSound.setCycleCount(AudioClip.INDEFINITE);
+        }
 	}
 	
 	@Override
 	public void draw(GraphicsContext gc) {
 			
         gc.drawImage(sprite, x, y, tamX, tamY);
+    }
+	
+	 // Controle do som
+    public static void startGhostSound() {
+        if (ghostSound != null && !ghostSound.isPlaying()) {
+            ghostSound.play();
+        }
+    }
+
+    public static void stopGhostSound() {
+        if (ghostSound != null && ghostSound.isPlaying()) {
+            ghostSound.stop();
+        }
     }
 	
 	// Método estático para pegar o sprite baseado no tipo de fantasma

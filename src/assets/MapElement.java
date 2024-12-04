@@ -79,9 +79,12 @@ public class MapElement {
 	
 	public void revive(int x, int y) {
 		setSprite(oldSprite);
-		this.alive = true;
 		this.setX(x);
 		this.setY(y);
+	}
+	
+	public void setAlive() {
+		this.alive = true;
 	}
 	
 	public boolean isAlive() {

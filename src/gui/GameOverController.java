@@ -1,5 +1,6 @@
 package gui;
 
+import assets.Pacman;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,7 @@ public class GameOverController {
             Parent menuRoot = loader.load();
 
             Scene menuScene = new Scene(menuRoot);
+            Pacman.resetLives();
             stage.setScene(menuScene);
             stage.setTitle("Menu Principal");
         } catch (Exception e) {
@@ -42,6 +44,7 @@ public class GameOverController {
             Parent gameRoot = loader.load();
 
             Scene gameScene = new Scene(gameRoot);
+            Pacman.resetLives();
             stage.setScene(gameScene);
             stage.setTitle("Jogo");
         } catch (Exception e) {
