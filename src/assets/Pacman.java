@@ -1,14 +1,18 @@
 package assets;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.media.AudioClip;
 
 public class Pacman extends Entites {
 	
 	private double rotationAngle = 0;
-	private static int lives = 1;
+	private static int lives = 3;
+	private static AudioClip deathSound;
 	
 	public Pacman(Game game, int x, int y) {
     	super(game, Sprites.getPacmanSprite(), x, y, Mapa.getTileSize(), Mapa.getTileSize());
+    	
+    	deathSound = new AudioClip(Pacman.class.getResource("/sounds/death_0.wav").toString());
     }
 
     // Sobrescrevendo o método move para ter uma movimentação específica para o Pacman
@@ -43,7 +47,11 @@ public class Pacman extends Entites {
 
         // Translada para o centro do Pacman (para aplicar rotação no centro)
         gc.translate(getX() + getTamX() / 2, getY() + getTamY() / 2);
-        gc.rotate(rotationAngle);  // Aplica a rotação com base no ângulo
+        
+        
+        if (isAlive()) {
+            gc.rotate(rotationAngle);  // Aplica a rotação somente quando está vivo
+        }
 
         // Desenha o sprite rotacionado
         gc.drawImage(getSprite(), -getTamX() / 2, -getTamY() / 2, getTamX(), getTamY());  // Ajusta a posição para o centro
@@ -55,9 +63,26 @@ public class Pacman extends Entites {
     @Override
     public void respawn(int x, int y) {
     	if (lives > 0) {
-    		lives--;
-    		this.revive(x, y);
-    	}
+            lives--;
+
+            // Define o sprite de morte e toca o som
+            setSprite(Sprites.getPacmanDeathSprite());
+            deathSound.play();
+
+            // Thread para temporizar o tempo da animação de morte antes de reviver
+            new Thread(() -> {
+                try {
+                    // Aguarda o tempo necessário para a animação de morte
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                // Revive o Pacman, redefinindo o sprite para o original
+                this.revive(x, y);
+                setSprite(Sprites.getPacmanSprite());
+            }).start();
+        }
     }
     
     public static int getLives() {

@@ -13,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.media.AudioClip;
+import java.io.File;
 
 
 public class Game extends Pane {
@@ -21,8 +23,12 @@ public class Game extends Pane {
 	private static int gameXSize = Mapa.getXTiles() * TILE_SIZE;
 	private static int gameYSize = Mapa.getYTiles() * TILE_SIZE;
 	
+	private AudioClip eatDot0 = new AudioClip(new File("src/sounds/eat_dot_0.wav").toURI().toString());
+	private AudioClip eatDot1 = new AudioClip(new File("src/sounds/eat_dot_1.wav").toURI().toString());
+	private boolean togglePointSound = true;		// Alterna entre os sons dos pontos
+	
 	public static HashSet<MapElement> walls;
-	HashSet<MapElement> points; //arrumar dps
+	HashSet<MapElement> points;
 	HashSet<Ghosts> ghosts;
 	Pacman pacman;
 	private final IntegerProperty score = new SimpleIntegerProperty(0);
@@ -61,9 +67,17 @@ public class Game extends Pane {
             public void handle(long now) {
             	if (allPoints() || !pacman.isAlive()) {
                     stopGameLoop();
+                    Ghosts.stopGhostSound();
                     endGame(); // Método para lidar com o término do jogo
                     return;
                 }
+            	
+            	// Som dos fantasmas
+            	if (pacman.isAlive()) {
+            	    Ghosts.startGhostSound();
+            	} else {
+            	    Ghosts.stopGhostSound();
+            	}
             	
             	lives.set(Pacman.getLives());
                 update();
@@ -189,6 +203,14 @@ public class Game extends Pane {
 	        if (pacman.isCollidingPoint(this.pacman, point) && point.isAlive() == true) {
 	            point.kill();
 	            score.set(score.get() + 2);
+	            
+	            if(togglePointSound) {
+	            	eatDot0.play();
+	            	
+	            } else {
+	            	eatDot1.play();
+	            }
+	            togglePointSound = !togglePointSound;    
 	        }
 	    }
     }
