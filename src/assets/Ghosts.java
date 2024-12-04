@@ -18,7 +18,7 @@ public class Ghosts extends Entites {
 		this.ghostx = x;
 		this.ghosty = y;
 		this.ghostType = ghost;
-		Acao_esperada = Action.DOWN;
+		Acao_esperada = Action.UP;
 		Acao_atual = Action.RIGHT;
 	}
 	

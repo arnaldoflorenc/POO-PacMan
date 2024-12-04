@@ -58,10 +58,10 @@ public class MapElement {
 	}
 	
 	public boolean isCollidingPoint(MapElement a, MapElement b) {
-		return a.x + 32 < b.x + b.tamX &&
-			   b.x + 32 < a.x + a.tamX &&
-			   a.y + 32 < b.y + b.tamY &&
-			   b.y + 32 < a.y + a.tamY;
+		return a.x + (Mapa.getTileSize() - 11) < b.x + b.tamX &&
+			   b.x + (Mapa.getTileSize() - 11) < a.x + a.tamX &&
+			   a.y + (Mapa.getTileSize() - 11) < b.y + b.tamY &&
+			   b.y + (Mapa.getTileSize() - 11) < a.y + a.tamY;
 	}
 	
 	public boolean isColliding(int x, int y, MapElement wall) {

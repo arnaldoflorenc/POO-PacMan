@@ -6,7 +6,7 @@ import java.util.List;
 public class Mapa {
 	private static int yTiles = 21;
 	private static int xTiles = 21;
-	private final static int tileSize = 48;
+	private final static int tileSize = 32;
 	protected static List<String> Maze = new ArrayList<>();
 	
 	public Mapa() {

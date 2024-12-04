@@ -153,21 +153,26 @@ public class Game extends Pane {
 			pacman.updateDir();
         
 		pacman.move();
+		registerPoint();
+		
 		for (Entites ghost: this.ghosts)
 			checkDeathCollision(pacman, ghost);
 			
-		registerPoint();
 		
         for (Ghosts ghost : ghosts) {
-        	if (!ghost.canMove(ghost.getAcaoAtual())) {
-        		action = Entites.getRandomAction();
-        		ghost.setDir(action); //COLISAO
+        	if (!ghost.canMove()) {
+        		if (!ghost.canMove(ghost.getAcaoAtual())) {
+        			action = Entites.getRandomAction();
+        			ghost.setDir(action); //COLISAO
+        		}
+        		if (!ghost.canMove(action)) {
+        			ghost.setDir(Entites.getRandomAction()); //MEIO
+        		}
+        		if (!ghost.canMove()) {
+        			ghost.setDir(Entites.getRandomAction());
+        		}
         	}
-        	if (!ghost.canMove(action)) {
-        		ghost.setDir(Entites.getRandomAction()); //MEIO
-        	}
-        	else
-        	{
+        	else {
         		ghost.updateDir();
         	}
         	
